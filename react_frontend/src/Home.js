@@ -14,7 +14,7 @@ export default function Home() {
 
     async function fetchHello() {
       try {
-        const res = await fetch("http://localhost:3001/api/hello", {
+        const res = await fetch("https://vscode-internal-33523-beta.beta01.cloud.kavia.ai:3001/api/hello", {
           // Explicitly set CORS mode to ensure frontend can hit the backend across ports
           mode: "cors",
           headers: {
