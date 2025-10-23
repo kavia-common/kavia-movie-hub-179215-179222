@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 export default function Home() {
   /**
    * Minimal home hero using Tailwind and Royal Purple accents.
-   * On mount, fetches from Flask backend at http://localhost:3001/api/hello
-   * and displays the returned text (or an error) below the welcome heading.
+   * On mount, fetches greeting text from the Flask backend.
+   * API base URL resolution order:
+   *   1) REACT_APP_API_BASE_URL env var (recommended for staging/prod/preview)
+   *   2) In development with no env var, use relative path to leverage CRA proxy to http://localhost:3001
+   *   3) Otherwise default to the remote backend https://vscode-internal-33523-beta.beta01.cloud.kavia.ai:3001
+   * Displays the returned text (or an error) below the welcome heading.
    */
   const [status, setStatus] = useState({ loading: true, message: "", error: "" });
 
@@ -13,9 +17,17 @@ export default function Home() {
     let isMounted = true;
 
     async function fetchHello() {
+      // Determine API base URL:
+      // 1) Use REACT_APP_API_BASE_URL if provided.
+      // 2) In development with no env var, default to '' to leverage CRA proxy (localhost:3001).
+      // 3) Otherwise default to the remote backend URL.
+      const DEFAULT_REMOTE = "https://vscode-internal-33523-beta.beta01.cloud.kavia.ai:3001";
+      const isDev = process.env.NODE_ENV === "development";
+      const envBase = (process.env.REACT_APP_API_BASE_URL || "").trim();
+      const API_BASE_URL = envBase || (isDev ? "" : DEFAULT_REMOTE);
+
       try {
-        // Use relative path so CRA dev proxy forwards to Flask on port 3001
-        const res = await fetch("/api/hello", {
+        const res = await fetch(`${API_BASE_URL}/api/hello`, {
           headers: {
             Accept: "text/plain, */*",
           },
