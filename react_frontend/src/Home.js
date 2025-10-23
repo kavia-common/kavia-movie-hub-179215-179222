@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { BASE_URL } from "./apiClient";
 
 // PUBLIC_INTERFACE
 export default function Home() {
   /**
    * Minimal home hero using Tailwind and Royal Purple accents.
-   * On mount, fetches from Flask backend at http://localhost:3001/api/hello
+   * On mount, fetches from the Flask backend using `${BASE_URL}/api/hello`
    * and displays the returned text (or an error) below the welcome heading.
    */
   const [status, setStatus] = useState({ loading: true, message: "", error: "" });
@@ -14,7 +15,7 @@ export default function Home() {
 
     async function fetchHello() {
       try {
-        const res = await fetch("https://vscode-internal-33523-beta.beta01.cloud.kavia.ai:3001/api/hello", {
+        const res = await fetch(`${BASE_URL}/api/hello`, {
           // Explicitly set CORS mode to ensure frontend can hit the backend across ports
           mode: "cors",
           headers: {
