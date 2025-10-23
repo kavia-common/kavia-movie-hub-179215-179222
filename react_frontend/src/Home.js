@@ -1,8 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // PUBLIC_INTERFACE
 export default function Home() {
-  /** Minimal home hero using Tailwind and Royal Purple accents */
+  /**
+   * Minimal home hero using Tailwind and Royal Purple accents.
+   * On mount, fetches from Flask backend at http://localhost:3001/api/hello
+   * and displays the returned text (or an error) below the welcome heading.
+   */
+  const [status, setStatus] = useState({ loading: true, message: "", error: "" });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function fetchHello() {
+      try {
+        const res = await fetch("http://localhost:3001/api/hello", {
+          // Explicitly set CORS mode to ensure frontend can hit the backend across ports
+          mode: "cors",
+          headers: {
+            Accept: "text/plain, */*",
+          },
+        });
+
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(`HTTP ${res.status} ${res.statusText}${text ? ` - ${text}` : ""}`);
+        }
+
+        const text = await res.text();
+        if (isMounted) {
+          setStatus({ loading: false, message: text || "Hello from Flask", error: "" });
+        }
+      } catch (err) {
+        if (isMounted) {
+          setStatus({
+            loading: false,
+            message: "",
+            error:
+              err?.message ||
+              "Failed to reach backend. Ensure Flask is running on port 3001 and CORS is enabled.",
+          });
+        }
+      }
+    }
+
+    fetchHello();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-royal-start to-royal-end">
       <div className="mx-4 w-full max-w-2xl">
@@ -17,6 +65,27 @@ export default function Home() {
             <p className="mt-3 text-secondary">
               Elegant, minimal starting point powered by Tailwind CSS.
             </p>
+
+            <div className="mt-6">
+              {status.loading && (
+                <p className="text-secondary animate-pulse">Connecting to Flask backend...</p>
+              )}
+              {!status.loading && status.message && (
+                <p className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-success/10 text-success border border-success/20">
+                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                  {status.message}
+                </p>
+              )}
+              {!status.loading && status.error && (
+                <p
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-error/10 text-error border border-error/20"
+                  title="Backend connectivity error"
+                >
+                  <span className="w-2 h-2 rounded-full bg-error" />
+                  {status.error}
+                </p>
+              )}
+            </div>
           </div>
         </section>
       </div>
