@@ -14,9 +14,8 @@ export default function Home() {
 
     async function fetchHello() {
       try {
-        const res = await fetch("http://localhost:3001/api/hello", {
-          // Explicitly set CORS mode to ensure frontend can hit the backend across ports
-          mode: "cors",
+        // Use relative path so CRA dev proxy forwards to Flask on port 3001
+        const res = await fetch("/api/hello", {
           headers: {
             Accept: "text/plain, */*",
           },

@@ -18,6 +18,12 @@ In the project directory, you can run:
 Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+Backend API requests during development are proxied to Flask:
+- We set "proxy": "http://localhost:3001" in package.json.
+- Use relative paths (e.g., fetch('/api/hello')) from the frontend.
+
+Important: After changing the proxy setting, restart the React dev server for it to take effect.
+
 ### `npm test`
 
 Launches the test runner in interactive watch mode.
