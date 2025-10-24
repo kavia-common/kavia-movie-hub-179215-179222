@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { get } from "./apiClient";
-import Movies from "./Movies";
+import Movies from "./components/Movies";
 
 // PUBLIC_INTERFACE
 export default function Home() {
