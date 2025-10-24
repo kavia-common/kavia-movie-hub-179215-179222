@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "./apiClient";
+import { get } from "./apiClient";
+import Movies from "./Movies";
 
 // PUBLIC_INTERFACE
 export default function Home() {
   /**
    * Minimal home hero using Tailwind and Royal Purple accents.
-   * On mount, fetches from the Flask backend using `${BASE_URL}/api/hello`
+   * On mount, fetches from the Flask backend using relative "/api/hello"
    * and displays the returned text (or an error) below the welcome heading.
    */
   const [status, setStatus] = useState({ loading: true, message: "", error: "" });
@@ -15,9 +16,7 @@ export default function Home() {
 
     async function fetchHello() {
       try {
-        const res = await fetch(`${BASE_URL}/api/hello`, {
-          // Explicitly set CORS mode to ensure frontend can hit the backend across ports
-          mode: "cors",
+        const res = await get("/api/hello", {
           headers: {
             Accept: "text/plain, */*",
           },
@@ -39,7 +38,7 @@ export default function Home() {
             message: "",
             error:
               err?.message ||
-              "Failed to reach backend. Ensure Flask is running on port 3001 and CORS is enabled.",
+              "Failed to reach backend. Ensure Flask is running and that /api is reachable.",
           });
         }
       }
@@ -53,8 +52,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-royal-start to-royal-end">
-      <div className="mx-4 w-full max-w-2xl">
+    <main className="min-h-screen flex items-start justify-center bg-gradient-to-b from-royal-start to-royal-end">
+      <div className="mx-4 w-full max-w-2xl my-10">
         <section className="rounded-2xl shadow-xl bg-white/70 backdrop-blur-md border border-white/60">
           <div className="p-10 text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary text-3xl mb-4 shadow">
@@ -86,6 +85,13 @@ export default function Home() {
                   {status.error}
                 </p>
               )}
+            </div>
+
+            {/* Divider and Movies section */}
+            <div className="mt-8">
+              <div className="mx-auto max-w-3xl text-left">
+                <Movies />
+              </div>
             </div>
           </div>
         </section>
