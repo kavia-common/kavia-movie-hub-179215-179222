@@ -9,7 +9,7 @@
 // PUBLIC_INTERFACE
 export const BASE_URL =
   process.env.REACT_APP_API_BASE ||
-  "https://vscode-internal-33523-beta.beta01.cloud.kavia.ai:3001";
+  "https://vscode-internal-30361-beta.beta01.cloud.kavia.ai:3001";
 
 /**
  * PUBLIC_INTERFACE
